@@ -2,28 +2,25 @@ import { Controller, Post, Body, HttpStatus } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { SignUpOutput } from './dto/auth-sign-up-output.dto';
-import { SignUpInput } from './dto/auth-sign-up-input.dto';
+import { UsersService } from '../users/users.service';
+import { SignUpOutput } from './dto/SignUpOutput';
+import { SignUpInput } from './dto/SignUpInput';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post('signup')
-  @ApiOperation({
-    summary: 'User Sign Up API',
-  })
+  @ApiOperation({})
   @ApiResponse({
     status: HttpStatus.CREATED,
     type: SignUpOutput,
   })
-  async signup(@Body() input: SignUpInput) {
-    return this.authService.signUp(input);
-  }
-
-  @Post('signin')
-  signin(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create();
+  async signup(@Body() input: SignUpInput): Promise<SignUpOutput> {
+    const user = await this.usersService.create(input);
+    return this.authService.createToken(user);
   }
 }

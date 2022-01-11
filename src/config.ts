@@ -2,6 +2,8 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 export default () => ({
   port: parseInt(process.env.PORT, 10) || 3000,
+  jwtSecretKey: process.env.JWT_SECRET_KEY || 'secret',
+  jwtExpirationTime: parseInt(process.env.JWT_EXPIRATION_TIME) || 3600,
   database: {
     type: process.env.DATABASE_TYPE || 'postgres',
     host: process.env.DATABASE_HOST || 'localhost',

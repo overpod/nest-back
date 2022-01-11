@@ -1,10 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-
+import { SignUpInput } from '../auth/dto/SignUpInput';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -14,23 +12,14 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async getByEmail(email: string) {
+    return await this.usersRepository.findOne({ email });
   }
 
-  findAll() {
-    return `This action returns all users`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async create(input: SignUpInput) {
+    const user = await this.getByEmail(input.email);
+    if (user)
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    return this.usersRepository.save(input);
   }
 }

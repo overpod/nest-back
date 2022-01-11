@@ -1,22 +1,28 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
-import { UsersService } from '../users/users.service';
-import { SignUpOutput } from './dto/auth-sign-up-output.dto';
-import { SignUpInput } from './dto/auth-sign-up-input.dto';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
-  create() {
-    return 'This action adds a new auth';
-  }
-  async signUp(input: SignUpInput): Promise<SignUpOutput> {
-    const registeredUser = await this.usersService.create(input);
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {}
+
+  async createToken(user: User) {
     return {
-      id: '',
-      createdAt: '',
-      updatedAt: '',
-      email: input.email,
+      token: this.jwtService.sign({
+        id: user.id,
+        jwtExpirationTime: this.configService.get('jwtExpirationTime'),
+      }),
+      user: {
+        id: user.id,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        email: user.email,
+      },
     };
   }
 }

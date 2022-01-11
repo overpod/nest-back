@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import {
   FastifyAdapter,
   NestFastifyApplication,
@@ -20,6 +21,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('', app, document);
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(configService.get<number>('port'), '0.0.0.0');
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
