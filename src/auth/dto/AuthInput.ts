@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class SignUpInput {
+export class AuthInput {
   @ApiProperty()
   @IsNotEmpty()
   @IsEmail()

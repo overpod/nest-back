@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
-export class SignUpOutputUser {
+export class AuthOutputUser {
   @Expose()
   @ApiProperty()
   id: string;
@@ -19,12 +19,12 @@ export class SignUpOutputUser {
   email: string;
 }
 
-export class SignUpOutput {
+export class AuthOutput {
   @Expose()
   @ApiProperty()
   token: string;
 
   @Expose()
   @ApiProperty()
-  user: SignUpOutputUser;
+  user: AuthOutputUser;
 }

@@ -83,5 +83,69 @@ describe('e2e', () => {
           });
         });
     });
+
+    it('SignIn User', async () => {
+      await app
+        .inject()
+        .post('/auth/signup')
+        .body(user)
+        .then((result) => {
+          expect(result.statusCode).toEqual(201);
+          expect(result.json()).toEqual({
+            token: expect.any(String),
+            user: {
+              id: expect.any(String),
+              createdAt: expect.any(String),
+              updatedAt: expect.any(String),
+              email: expect.any(String),
+            },
+          });
+        });
+      await app
+        .inject()
+        .post('/auth/signin')
+        .body({ ...user, password: 'sdfdgdfgdfgsdfgsdfg' })
+        .then((result) => {
+          expect(result.json()).toEqual({
+            error: 'Unauthorized',
+            statusCode: 401,
+            message: 'Invalid credentials',
+          });
+        });
+    });
+
+    it('SignIn User invalid credentials', async () => {
+      await app
+        .inject()
+        .post('/auth/signup')
+        .body(user)
+        .then((result) => {
+          expect(result.statusCode).toEqual(201);
+          expect(result.json()).toEqual({
+            token: expect.any(String),
+            user: {
+              id: expect.any(String),
+              createdAt: expect.any(String),
+              updatedAt: expect.any(String),
+              email: expect.any(String),
+            },
+          });
+        });
+      await app
+        .inject()
+        .post('/auth/signin')
+        .body(user)
+        .then((result) => {
+          expect(result.json()).toEqual({
+            token: expect.any(String),
+            user: {
+              id: expect.any(String),
+              createdAt: expect.any(String),
+              updatedAt: expect.any(String),
+              email: expect.any(String),
+            },
+          });
+        });
+    });
   });
 });

@@ -3,8 +3,8 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import { SignUpOutput } from './dto/SignUpOutput';
-import { SignUpInput } from './dto/SignUpInput';
+import { AuthOutput } from './dto/AuthOutput';
+import { AuthInput } from './dto/AuthInput';
 
 @Controller('auth')
 export class AuthController {
@@ -17,10 +17,21 @@ export class AuthController {
   @ApiOperation({})
   @ApiResponse({
     status: HttpStatus.CREATED,
-    type: SignUpOutput,
+    type: AuthOutput,
   })
-  async signup(@Body() input: SignUpInput): Promise<SignUpOutput> {
+  async signup(@Body() input: AuthInput): Promise<AuthOutput> {
     const user = await this.usersService.create(input);
+    return this.authService.createToken(user);
+  }
+
+  @Post('signin')
+  @ApiOperation({})
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    type: AuthOutput,
+  })
+  async signin(@Body() input: AuthInput): Promise<AuthOutput> {
+    const user = await this.usersService.validateUser(input);
     return this.authService.createToken(user);
   }
 }
