@@ -18,8 +18,12 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
+  async getById(id: string) {
+    return this.usersRepository.findOne(id);
+  }
+
   async getByEmail(email: string) {
-    return await this.usersRepository.findOne({ email });
+    return this.usersRepository.findOne({ email });
   }
 
   async create(input: AuthInput) {
